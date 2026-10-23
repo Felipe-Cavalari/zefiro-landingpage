@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Zefiro: a barra de status que o Windows nunca teve</title>
+  <meta name="description" content="Barra de status nativa para o Windows, com ilha de mídia, painéis, uso do Claude e do Codex, cinco formatos e nove temas. Em Rust, sem WebView.">
+  <meta name="theme-color" content="#087F85">
+  <meta property="og:title" content="Zefiro">
+  <meta property="og:description" content="A barra de status que o Windows nunca teve. Nativa, em Rust, sem WebView.">
+  <meta property="og:image" content="assets/icon.png">
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <a class="skip" href="#main">Pular para o conteúdo</a>
+
+  <header class="top">
+    <a class="brand" href="#" aria-label="Zefiro">
+      <img src="assets/logo.svg" alt="" width="30" height="30">
+      <span>Zefiro</span>
+      <span class="ver" data-version>v1.2.1</span>
+    </a>
+    <nav class="nav" aria-label="Seções">
+      <a href="#itens" data-i18n="nav.features">Itens</a>
+      <a href="#personalizar" data-i18n="nav.custom">Personalizar</a>
+      <a href="#leveza" data-i18n="nav.light">Leveza</a>
+    </nav>
+    <div class="top-r">
+      <div class="lang" role="group" aria-label="Idioma / Language">
+        <button type="button" class="lang-opt" data-lang="pt">PT</button>
+        <button type="button" class="lang-opt" data-lang="en">EN</button>
+      </div>
+      <a class="btn btn-sm" href="https://github.com/Felipe-Cavalari/zefiro/releases/latest" data-download data-i18n="nav.download">Baixar</a>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <h1 data-i18n="hero.title">A barra de status que o Windows nunca teve.</h1>
+      <div class="hero-side">
+        <p class="lede" data-i18n="hero.lede"></p>
+        <div class="ctas">
+          <a class="btn" href="https://github.com/Felipe-Cavalari/zefiro/releases/latest" data-download>
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M1 2.3l5.7-.8v5.5H1zm6.4-.9L15 0v7H7.4zM1 7.7h5.7v5.5L1 12.4zm6.4 0H15V15l-7.6-1z"/></svg>
+            <span data-i18n="hero.cta">Baixar para Windows</span>
+          </a>
+          <a class="btn btn-ghost" href="https://github.com/Felipe-Cavalari/zefiro" data-i18n="hero.code">Ver o código</a>
+        </div>
+        <p class="note" data-i18n="hero.note"></p>
+      </div>
+    </section>
+
+    <section class="stage" data-i18n-label="stage.label" aria-label="Demonstração animada da barra do Zefiro">
+      <div class="stage-frame">
+        <div class="stage-view"></div>
+        <div class="stage-hud">
+          <p class="stage-caption" aria-live="polite"></p>
+          <button type="button" class="stage-resume" data-i18n="stage.resume">Voltar à demonstração</button>
+          <button type="button" class="stage-toggle" aria-label="Pausar">
+            <svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9M11 3.5v9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+            <svg class="i-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3v10l8-5z" fill="currentColor"/></svg>
+          </button>
+        </div>
+      </div>
+      <ol class="stage-chapters"></ol>
+    </section>
+
+    <section class="block" id="itens">
+      <div class="block-head">
+        <h2 data-i18n="items.title">Tudo o que cabe na barra</h2>
+        <p data-i18n="items.lede"></p>
+      </div>
+      <div class="items">
+        <div class="items-col">
+          <h3 data-i18n="items.system">Do sistema</h3>
+          <ul data-items="system"></ul>
+        </div>
+        <div class="items-col">
+          <h3 data-i18n="items.dev">Para quem programa</h3>
+          <ul data-items="dev"></ul>
+        </div>
+        <div class="items-col">
+          <h3 data-i18n="items.island">Da ilha</h3>
+          <ul data-items="island"></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="personalizar">
+      <div class="block-head">
+        <h2 data-i18n="custom.title">Do seu jeito</h2>
+        <p data-i18n="custom.lede"></p>
+      </div>
+      <div class="custom">
+        <div class="pickers">
+          <div>
+            <h3 id="pk-format" data-i18n="custom.format">Formato</h3>
+            <div class="picker" role="radiogroup" aria-labelledby="pk-format" data-picker="format"></div>
+          </div>
+          <div>
+            <h3 id="pk-theme" data-i18n="custom.theme">Tema</h3>
+            <div class="picker picker-themes" role="radiogroup" aria-labelledby="pk-theme" data-picker="theme"></div>
+          </div>
+        </div>
+        <div class="preview" data-i18n-label="custom.label" aria-label="Prévia da barra">
+          <div class="preview-view"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block light" id="leveza">
+      <div class="block-head">
+        <h2 data-i18n="light.title">Leve porque é nativo</h2>
+        <p data-i18n="light.lede"></p>
+        <p class="springs" data-i18n="light.springs"></p>
+      </div>
+      <dl class="budget">
+        <div><dt>35 MB</dt><dd data-i18n="light.ram"></dd></div>
+        <div><dt>0,3 %</dt><dd data-i18n="light.cpu"></dd></div>
+        <div><dt>16 ms</dt><dd data-i18n="light.click"></dd></div>
+        <div><dt>250 ms</dt><dd data-i18n="light.first"></dd></div>
+      </dl>
+      <p class="budget-note" data-i18n="light.note"></p>
+    </section>
+
+    <section class="final">
+      <img src="assets/logo.svg" alt="" width="72" height="72">
+      <h2 data-i18n="final.title">Pronto para trocar de barra?</h2>
+      <p data-i18n="final.lede"></p>
+      <a class="btn" href="https://github.com/Felipe-Cavalari/zefiro/releases/latest" data-download>
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M1 2.3l5.7-.8v5.5H1zm6.4-.9L15 0v7H7.4zM1 7.7h5.7v5.5L1 12.4zm6.4 0H15V15l-7.6-1z"/></svg>
+        <span data-i18n="hero.cta">Baixar para Windows</span>
+      </a>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p class="credits" data-i18n="foot.credits"></p>
+    <ul class="foot-links">
+      <li><a href="https://github.com/Felipe-Cavalari/zefiro">GitHub</a></li>
+      <li><a href="https://github.com/Felipe-Cavalari/zefiro/releases" data-i18n="foot.releases">Versões</a></li>
+      <li><a href="https://github.com/Felipe-Cavalari/zefiro/blob/main/LICENSE-MIT" data-i18n="foot.license">Licença</a></li>
+    </ul>
+    <p class="wordmark" aria-hidden="true">Zefiro</p>
+  </footer>
+
+  <script src="js/spring.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/scene.js"></script>
+  <script src="js/panels.js"></script>
+  <script src="js/demo.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
