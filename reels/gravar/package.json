@@ -1,0 +1,11 @@
+{
+  "name": "zefiro-reels-gravar",
+  "private": true,
+  "description": "Grava o reels do Zefiro em MP4, quadro a quadro.",
+  "scripts": {
+    "gravar": "node record.js"
+  },
+  "dependencies": {
+    "playwright-core": "1.56.1"
+  }
+}

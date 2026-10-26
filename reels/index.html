@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Zefiro Reels</title>
+  <meta name="description" content="Reels vertical do Zefiro, feito com o clone animado da barra da landing page.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="reel.css">
+</head>
+<body>
+  <div class="reel-stage">
+    <div class="reel" aria-label="Reels animado do Zefiro" role="img">
+      <div class="r-bg">
+        <svg class="r-wind" viewBox="0 0 1080 1920" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M-80 420C180 360 380 470 620 410S960 330 1180 380" />
+          <path d="M-80 980C200 930 420 1040 660 990S980 900 1180 950" />
+          <path d="M-80 1480C160 1440 400 1530 640 1490S960 1410 1180 1460" />
+          <path d="M-80 1760C220 1720 440 1800 700 1770S1000 1700 1180 1740" />
+        </svg>
+      </div>
+
+      <div class="r-bug"><img src="../assets/logo.svg" alt="" width="44" height="44"><span>Zefiro</span></div>
+
+      <section class="r-intro">
+        <img class="r-intro-logo" src="../assets/logo.svg" alt="" width="240" height="240">
+        <p class="r-intro-word">Zefiro</p>
+        <p class="r-intro-tag">A barra de status que o Windows nunca teve.</p>
+      </section>
+
+      <p class="r-eyebrow"></p>
+      <h1 class="r-hl"></h1>
+
+      <div class="r-card"><div class="r-view"></div></div>
+
+      <ul class="r-ticker"></ul>
+
+      <section class="r-stats">
+        <div class="r-stat"><b data-to="35" data-suffix=" MB">0 MB</b><span>de RAM em repouso</span></div>
+        <div class="r-stat"><b data-to="0.3" data-dec="1" data-suffix=" %">0 %</b><span>de CPU em repouso</span></div>
+        <div class="r-stat"><b data-to="16" data-suffix=" ms">0 ms</b><span>do clique ao painel na tela</span></div>
+        <p class="r-stats-foot">Nativo, em Rust, sem WebView.</p>
+      </section>
+
+      <section class="r-cta">
+        <img src="../assets/logo.svg" alt="" width="180" height="180">
+        <p class="r-cta-title">Troque de barra.</p>
+        <p class="r-cta-sub">Grátis e open source. Instala por usuário, sem pedir administrador.</p>
+        <p class="r-cta-btn">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M1 2.3l5.7-.8v5.5H1zm6.4-.9L15 0v7H7.4zM1 7.7h5.7v5.5L1 12.4zm6.4 0H15V15l-7.6-1z"/></svg>
+          Baixar para Windows
+        </p>
+        <p class="r-cta-url">github.com/Felipe-Cavalari/zefiro</p>
+      </section>
+
+      <div class="r-guides" aria-hidden="true"><i class="g-top"></i><i class="g-bottom"></i></div>
+    </div>
+  </div>
+
+  <div class="r-controls">
+    <button type="button" id="r-toggle">Pausar</button>
+    <button type="button" id="r-restart">Recomeçar</button>
+    <button type="button" id="r-guides">Margens seguras</button>
+  </div>
+
+  <script src="../js/spring.js"></script>
+  <script src="../js/icons.js"></script>
+  <script src="../js/i18n.js"></script>
+  <script src="../js/scene.js"></script>
+  <script src="../js/panels.js"></script>
+  <script src="reel.js"></script>
+</body>
+</html>

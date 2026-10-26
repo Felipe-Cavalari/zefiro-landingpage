@@ -37,6 +37,7 @@ E abra `http://127.0.0.1:4173`. Abrir o `index.html` direto também funciona.
 | `js/panels.js` | Conteúdo dos painéis de cada chip |
 | `js/demo.js` | O roteiro dos cinco capítulos, pausa e modo interativo |
 | `js/main.js` | Liga tudo: idioma, lista de itens, prévia de formato e tema e o link do instalador |
+| `reels/` | Reels vertical (1080 × 1920) com o mesmo clone da barra e o gravador de MP4; ver `reels/README.md` |
 
 O botão de download aponta para a última release do GitHub; quando a API responde, ele troca o link pelo `Zefiro-x.y.z-setup.exe` e atualiza a versão no topo.
 
