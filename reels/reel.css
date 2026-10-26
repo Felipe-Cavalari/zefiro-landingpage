@@ -457,9 +457,40 @@ body {
 }
 
 .r-cta-url {
-  font-size: 38px;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 34px;
   color: var(--r-ink-2);
   letter-spacing: 0.01em;
+}
+
+.r-cta-url svg {
+  width: 30px;
+  height: 30px;
+}
+
+/* ---------- Segunda faixa da ilha ---------- */
+.reel.track-2 .zx-cover {
+  background: radial-gradient(circle at 30% 68%, #e3f7ff 0 15%, transparent 16%), linear-gradient(205deg, #5bc0ff 0%, #2f6fd1 52%, #1b1f4a 100%);
+}
+
+.reel.swap .zx-cover {
+  animation: cover-swap 0.55s cubic-bezier(.2, 1.3, .35, 1);
+}
+
+.reel.swap .zx-peek-t {
+  animation: peek-swap 0.5s cubic-bezier(.2, 1, .3, 1);
+}
+
+@keyframes cover-swap {
+  from { transform: scale(0.4) rotate(-12deg); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+@keyframes peek-swap {
+  from { transform: translateX(18px); opacity: 0; }
+  to { transform: none; opacity: 1; }
 }
 
 .reel.s-cta .r-cta > * {

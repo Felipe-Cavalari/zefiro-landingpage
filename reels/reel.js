@@ -1,5 +1,6 @@
-// Roteiro do reels: abertura, ilha, painéis, formatos, temas, números e chamada final, em ~37 s e em laço.
+// Roteiro do reels: abertura, ilha, painéis, formatos, temas, números e chamada final, em ~48 s e em laço.
 // A barra é o mesmo clone da landing page (Z.Scene); este arquivo só move a câmera, o cursor e os textos.
+// Cada momento com som vira uma deixa (cue) em window.__cues, que o gravador usa para montar a trilha.
 (function () {
   const Z = window.Z;
   Z.lang = 'pt';
@@ -41,6 +42,32 @@
     lyric: 1,
   };
 
+  // ---------- Faixas ----------
+  // A primeira é a da landing (Vento Oeste); a segunda entra quando a ilha troca de mídia.
+  const TRACKS = [
+    null,
+    {
+      accent: '#5BC0FF',
+      text: {
+        'd.song': 'Céu Aberto',
+        'd.artist': 'Luz de Inverno',
+        'd.lyrics': [
+          'Acendo a luz e o inverno vai embora',
+          'Cada janela guarda um pouco de agora',
+          'O céu abriu e ninguém viu a hora',
+          'Fica comigo, que a noite demora',
+          'Céu aberto, canta lá fora',
+        ],
+      },
+    },
+  ];
+  let track = 0;
+  const baseT = Z.t;
+  Z.t = (key) => {
+    const tr = TRACKS[track];
+    return tr && tr.text[key] !== undefined ? tr.text[key] : baseT(key);
+  };
+
   // ---------- Encaixe na janela ----------
   function fit() {
     const s = REC
@@ -60,6 +87,49 @@
     maxVisibleNarrow: 100000,
     state: Object.assign({}, BASE, { sections: clone(MAIN_SECTIONS), island: 'idle', playing: false }),
   });
+
+  // Temas com acento "auto" seguem a capa: com a segunda faixa, o acento é o azul dela.
+  const applyTheme = scene.applyTheme.bind(scene);
+  scene.applyTheme = () => {
+    applyTheme();
+    const tr = TRACKS[track];
+    if (tr && !Z.THEMES[scene.state.theme].accent) {
+      scene.screen.style.setProperty('--z-accent', tr.accent);
+      scene.screen.style.setProperty('--z-accent-rgb', hexRgb(tr.accent));
+    }
+  };
+
+  function hexRgb(hex) {
+    const n = parseInt(hex.slice(1), 16);
+    return `${n >> 16}, ${(n >> 8) & 255}, ${n & 255}`;
+  }
+
+  function setTrack(i) {
+    track = i;
+    reel.classList.toggle('track-2', i === 1);
+    scene.relabelIsland();
+    scene.applyTheme();
+    reel.classList.remove('swap');
+    void reel.offsetWidth;
+    reel.classList.add('swap');
+  }
+
+  // ---------- Deixas de som ----------
+  let t0 = 0;
+  function cue(type, data = {}) {
+    window.__cues.push(Object.assign({ t: Math.round(performance.now() - t0), type }, data));
+  }
+
+  const click = scene.click.bind(scene);
+  scene.click = () => {
+    cue('click');
+    click();
+  };
+
+  function volume(v) {
+    scene.set({ volume: v });
+    cue('vol', { v });
+  }
 
   // ---------- Reprodução ----------
   let token = 0;
@@ -191,33 +261,52 @@
     mode();
     await wait(60, tok);
     mode('s-intro');
-    await wait(3000, tok);
+    cue('wind');
+    cue('whoosh');
+    await wait(300, tok);
+    cue('vo', { id: 'intro' });
+    await wait(3300, tok);
     mode('s-intro', 's-intro-out');
     await wait(450, tok);
   }
 
   async function island(tok) {
+    if (track) setTrack(0);
     reset({ island: 'idle', playing: false });
     cut({ x: 520, y: 0, w: 400, h: 260 });
     mode('show-bug', 'show-card');
+    cue('whoosh', { soft: true });
     say('Uma *ilha* de mídia no centro da barra.', { icon: 'music', label: 'Ilha' });
-    await wait(1000, tok);
+    await wait(200, tok);
+    cue('vo', { id: 'ilha' });
+    await wait(700, tok);
     scene.set({ island: 'media', playing: true });
-    await wait(1100, tok);
+    cue('music', { track: 0 });
+    cue('pop');
+    await wait(900, tok);
     scene.set({ island: 'peek' });
+    await wait(1200, tok);
+    // A mídia troca: a ilha mostra a capa e o nome da faixa nova.
+    cue('skip');
+    setTrack(1);
+    say('Trocou de *música?* A ilha acompanha.');
+    scene.set({ progress: 0.02 });
+    cue('music', { track: 1 });
     await wait(1400, tok);
     scene.set({ island: 'osd', osd: 58 });
     for (let v = 58; v <= 82; v += 4) {
-      scene.set({ osd: v, volume: v });
-      await wait(110, tok);
+      scene.set({ osd: v });
+      volume(v);
+      await wait(130, tok);
     }
     await wait(500, tok);
     scene.set({ island: 'media' });
     say('Um clique abre *letras*, clima e hardware.');
-    await wait(500, tok);
+    await wait(300, tok);
+    cue('vo', { id: 'abas' });
     await to(tok, scene.W / 2 + 10, 22, 700);
     scene.click();
-    scene.set({ island: 'expanded', tab: 'media', progress: 0.34 });
+    scene.set({ island: 'expanded', tab: 'media', progress: 0.06 });
     focusIsland();
     await wait(900, tok);
     await clickTab(tok, 'lyrics');
@@ -232,17 +321,19 @@
   }
 
   async function panels(tok) {
-    reset();
+    reset({ volume: 82 });
     scene.setFocus(null);
     say('Painéis que *nascem* dos ícones.', { icon: 'volume', label: 'Painéis' });
-    await wait(500, tok);
+    await wait(400, tok);
+    cue('vo', { id: 'paineis' });
+    await wait(100, tok);
     await clickChip(tok, 'audio');
-    await wait(700, tok);
-    for (let v = 82; v >= 46; v -= 4) {
-      scene.set({ volume: v });
-      await wait(80, tok);
+    await wait(600, tok);
+    for (let v = 78; v >= 46; v -= 4) {
+      volume(v);
+      await wait(90, tok);
     }
-    await wait(700, tok);
+    await wait(500, tok);
     say('O uso do *Claude* e do *Codex* sempre à vista.', { icon: 'spark', label: 'Para quem programa' });
     await clickChip(tok, 'claude');
     await wait(1800, tok);
@@ -254,7 +345,7 @@
 
   async function formats(tok) {
     // O painel do Claude fica aberto para mostrar que ele também muda com o formato.
-    reset({ panel: 'claude' });
+    reset({ panel: 'claude', volume: 46 });
     const p = scene.panelRect;
     const r = scene.islandRect();
     const x0 = Math.min(p.x, r.x) - 40;
@@ -262,26 +353,31 @@
     scene.setFocus({ x: x0, y: 0, w: x1 - x0, h: p.y + p.h + 50 });
     say('O mesmo conteúdo em *cinco* formatos.', { icon: null, label: 'Formatos' });
     setTicker(Z.FORMATS.map((f) => Z.t('fmt.' + f)));
-    await wait(500, tok);
+    await wait(300, tok);
+    cue('vo', { id: 'formatos' });
+    await wait(200, tok);
     for (let i = 0; i < Z.FORMATS.length; i++) {
       scene.set({ format: Z.FORMATS[i] });
       tick(i);
+      if (i) cue('tick', { i });
       await wait(1000, tok);
     }
   }
 
   async function themes(tok) {
     const ids = ['obsidian', 'cobalto', 'porcelain', 'plum', 'evergreen', 'nord', 'graphite', 'slate', 'espresso'];
-    reset({ format: 'ilhas' });
+    reset({ format: 'ilhas', volume: 46 });
     say('Nove temas, com *acrílico* no Cobalto.', { icon: null, label: 'Temas' });
     setTicker(ids.map((id) => Z.THEMES[id].name));
     tick(0);
+    cue('vo', { id: 'temas', at: 250 });
     await clickChip(tok, 'clock');
     scene.showCursor(false);
     await wait(500, tok);
     for (let i = 1; i < ids.length; i++) {
       scene.set({ theme: ids[i] });
       tick(i);
+      cue('tick', { i });
       await wait(i === 1 ? 1200 : 600, tok);
     }
     await wait(400, tok);
@@ -307,19 +403,29 @@
     setTicker(null);
     say('', null);
     mode('show-bug', 'show-card', 'card-out');
+    cue('whoosh', { soft: true });
     await wait(500, tok);
     reset({ island: 'idle', playing: false });
-    reel.querySelectorAll('.r-stat b').forEach((b, i) => countUp(b, 150 + i * 350));
+    reel.querySelectorAll('.r-stat b').forEach((b, i) => {
+      countUp(b, 150 + i * 350);
+      cue('pop', { at: 150 + i * 350, i });
+    });
     mode('show-bug', 's-stats');
-    await wait(4000, tok);
+    await wait(300, tok);
+    cue('vo', { id: 'leveza' });
+    await wait(3700, tok);
     mode('show-bug', 's-stats', 's-stats-out');
     await wait(500, tok);
   }
 
   async function cta(tok) {
     mode('s-cta');
-    await wait(4600, tok);
+    cue('chime');
+    await wait(400, tok);
+    cue('vo', { id: 'fim' });
+    await wait(4200, tok);
     mode('s-cta', 's-cta-out');
+    cue('end');
     await wait(600, tok);
   }
 
@@ -331,6 +437,8 @@
     syncToggle();
     try {
       do {
+        window.__cues = [];
+        t0 = performance.now();
         for (const s of SCENES) await s(tok);
         window.__reelLoops = (window.__reelLoops || 0) + 1;
       } while (!REC);

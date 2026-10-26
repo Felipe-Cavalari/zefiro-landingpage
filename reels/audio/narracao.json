@@ -1,0 +1,14 @@
+{
+  "voice": "7lu3ze7orhWaNeSPowWx",
+  "model": "eleven_multilingual_v2",
+  "lines": {
+    "intro": "Conheça o Zefiro: a barra de status que o Windows nunca teve.",
+    "ilha": "No centro, uma ilha mostra o que está tocando. Trocou de música? Ela acompanha. E o volume passa por ela também.",
+    "abas": "Um clique, e você vê letras, clima e hardware.",
+    "paineis": "Cada ícone abre um painel. E o uso do Claude e do Codex fica sempre à vista.",
+    "formatos": "São cinco formatos...",
+    "temas": "e nove temas, com acrílico de verdade.",
+    "leveza": "Tudo nativo, em Rust, sem WebView. Leve de verdade.",
+    "fim": "É grátis e open source. O link tá na bio!"
+  }
+}

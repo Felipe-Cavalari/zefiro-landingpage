@@ -1,5 +1,6 @@
 // Grava o reels quadro a quadro com relógio virtual: temporizadores, rAF e animações CSS
 // andam exatamente 1/30 s por quadro, então o vídeo sai sem travadas, por mais lenta que seja a captura.
+// Depois junta a trilha montada pelo mix.py (músicas, efeitos e narração) a partir das deixas do roteiro.
 // Uso, com um servidor estático na raiz da landing (porta 4188): node record.js [saída.mp4] [pasta dos quadros]
 const { chromium } = require('playwright-core');
 const fs = require('fs');
@@ -99,12 +100,23 @@ const CLOCK = `(() => {
     if (await page.evaluate(() => window.__reelLoops >= 1)) break;
     if (n > FPS * 120) throw new Error('o roteiro não terminou em 120 s');
   }
+  const cues = await page.evaluate(() => window.__cues);
   await browser.close();
-  console.log(`${n} quadros (${(n / FPS).toFixed(1)} s). Erros: ${errors.length ? errors.join(' | ') : 'nenhum'}`);
+  console.log(`${n} quadros (${(n / FPS).toFixed(1)} s), ${cues.length} deixas. Erros: ${errors.length ? errors.join(' | ') : 'nenhum'}`);
 
+  // Vídeo sem som, depois a trilha (mix.py) e a junção, com o volume final em -14 LUFS.
+  const video = path.join(work, 'video.mp4');
   execFileSync('ffmpeg', [
     '-loglevel', 'error', '-y', '-framerate', String(FPS), '-i', path.join(work, 'f%05d.jpg'),
-    '-vf', 'format=yuv420p', '-c:v', 'libx264', '-preset', 'slow', '-crf', '17', '-movflags', '+faststart', outMp4,
+    '-vf', 'format=yuv420p', '-c:v', 'libx264', '-preset', 'slow', '-crf', '17', video,
+  ], { stdio: 'inherit' });
+  const cuesFile = path.join(work, 'cues.json');
+  fs.writeFileSync(cuesFile, JSON.stringify(cues, null, 1));
+  const wav = path.join(work, 'trilha.wav');
+  execFileSync(process.env.PYTHON || 'python', [path.join(__dirname, 'mix.py'), cuesFile, String(n / FPS), wav], { stdio: 'inherit' });
+  execFileSync('ffmpeg', [
+    '-loglevel', 'error', '-y', '-i', video, '-i', wav, '-map', '0:v', '-map', '1:a', '-c:v', 'copy',
+    '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11', '-ar', '48000', '-c:a', 'aac', '-b:a', '192k', '-shortest', '-movflags', '+faststart', outMp4,
   ], { stdio: 'inherit' });
   console.log('MP4:', outMp4);
 })();
