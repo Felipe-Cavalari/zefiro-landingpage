@@ -19,7 +19,7 @@
     const groups = Z.items();
     const icons = {
       clock: null, audio: 'volume', mic: 'mic', brightness: 'sun', notifications: 'bell', dnd: 'moon', power: 'power',
-      claude: 'spark', codex: 'codex', vscode: 'code', terminal: 'terminal', chat: 'chat',
+      claude: 'spark', codex: 'codex', grok: 'grok', ia: 'usage', vscode: 'code', cursor: 'cube', terminal: 'terminal', chat: 'chat', commands: 'braces', spotify: 'music', tray: 'tray',
       island: 'music', player: 'play', weather: 'cloud', hardware: 'cpu',
     };
     for (const key of ['system', 'dev', 'island']) {

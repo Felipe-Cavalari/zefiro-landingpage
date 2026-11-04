@@ -115,7 +115,7 @@
       w: 240,
       h: 188,
       html:
-        `<div class="zx-p-head zx-brand">${icon('logo')}<b>Zefiro</b><span class="zx-dim">1.2.1</span></div>` +
+        `<div class="zx-p-head zx-brand">${icon('logo')}<b>Zefiro</b><span class="zx-dim">1.3.2</span></div>` +
         row('palette', t('d.themes')) +
         row('pencil', t('d.editBar'), '', 'zx-edit-item') +
         row('gear', t('d.settings')) +
